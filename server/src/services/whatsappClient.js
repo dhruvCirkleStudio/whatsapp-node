@@ -1,4 +1,4 @@
-const { Client, LocalAuth } = require("whatsapp-web.js");
+const { Client, LocalAuth } = require("../config/whatsappWebLib");
 const qrcode = require("qrcode-terminal");
 const { DefaultMsg } = require("../models/defaultMsg.model");
 
@@ -23,17 +23,6 @@ client.on("message", async (message) => {
     );
   }
 });
-
-// client.on("qr", (qr) => {
-//   console.log("New QR Code received. Sending to clients...");
-//   qrcode.toDataURL(qr, (err, qrCodeUrl) => {
-//     if (err) {
-//       console.error("Error generating QR Code:", err);
-//       return;
-//     }
-//     io.emit("qrCode", qrCodeUrl);
-//   });
-// });
 
 client.initialize();
 

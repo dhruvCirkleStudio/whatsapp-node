@@ -22,6 +22,7 @@ const sendMessage = async (req, res) => {
   }
 };
 
+// GET DEAFAULT MESSAGE FROM USER
 const getDefaultMessage = async (req, res) => {
   try {
     const { defaultMsg } = req.body;
