@@ -1,13 +1,15 @@
 import "./App.css";
 import { SocketProvider } from "./context/SocketContext";
-import Home from "./pages/Home";
-import Router from "./route/router";
+import Router from "./route/Router";
+import ToastNotification from "./utils/ToastNotification";
 
 function App() {
   return (
     <>
       <SocketProvider>
-       <Home/>
+        {/* <Home/> */}
+        <Router />
+        <ToastNotification />
       </SocketProvider>
     </>
   );

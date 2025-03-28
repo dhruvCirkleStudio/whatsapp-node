@@ -1,4 +1,4 @@
-const { Client, LocalAuth } = require("../config/whatsappWebLib");
+const { Client, LocalAuth } = require("../../whatsappWebLib");
 const qrcode = require("qrcode-terminal");
 const { DefaultMsg } = require("../models/defaultMsg.model");
 
@@ -8,9 +8,9 @@ const client = new Client({
   authStrategy: new LocalAuth(),
 });
 
-client.on("ready", () => {
-  console.log("WhatsApp client is ready!");
-});
+// client.on("ready", () => {
+//   console.log("WhatsApp client is ready!");
+// });
 
 client.on("message", async (message) => {
   const defaultMessage = await DefaultMsg.findOne().sort({ _id: -1 });

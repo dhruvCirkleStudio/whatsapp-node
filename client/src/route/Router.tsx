@@ -12,7 +12,7 @@ export default function Router() {
       element: <Auth/>,
       children:[
         {
-            path:'/home',
+            path:'/',
             element:<Home/>
         }
       ]

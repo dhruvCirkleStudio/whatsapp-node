@@ -1,7 +1,8 @@
-import React from 'react'
+import * as React from "react";
+
 
 export default function Login() {
   return (
-    <div>Login</div>
-  )
+   <h1>login</h1>
+  );
 }

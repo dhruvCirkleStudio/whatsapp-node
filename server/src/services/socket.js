@@ -37,6 +37,15 @@ const initializeSocket = (server) => {
     });
   });
 
+  client.on("ready", () => {
+    console.log("WhatsApp client is ready!");
+    io.emit("whatsapp-connected","user connected!");
+  });
+  client.on("disconnected", () => {
+    console.log("WhatsApp client is disconnected!");
+    io.emit("whatsapp-disconnected","user disconnected!");
+  });
+
   return io;
 };
 
