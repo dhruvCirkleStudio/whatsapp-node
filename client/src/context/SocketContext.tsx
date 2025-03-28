@@ -61,6 +61,7 @@ export const SocketProvider = ({ children }: { children: ReactNode }) => {
         whatsappConnectionStatus: true,
         message: msg,
       });
+      setQrImg(null)
       toast("whatsapp connected!")
     });
 

@@ -1,7 +1,9 @@
 const socketIo = require("socket.io");
 const { client, currentQrCode } = require("./whatsappClient");
 const qrcode = require("qrcode");
+const fs = require("fs")
 let io; // Define io globally
+
 
 const initializeSocket = (server) => {
   io = socketIo(server, {
@@ -21,7 +23,7 @@ const initializeSocket = (server) => {
     }
 
     socket.on("disconnect", () => {
-      console.log("A client disconnected");
+      console.log("A client disconnected"); 
     });
   });
 
@@ -36,16 +38,14 @@ const initializeSocket = (server) => {
       io.emit("qrCode", qrCodeUrl);
     });
   });
-
-  client.on("ready", () => {
-    console.log("WhatsApp client is ready!");
+  client.on("authenticated", () => {
+    console.log("WhatsApp client Authenticated!");
     io.emit("whatsapp-connected","user connected!");
   });
   client.on("disconnected", () => {
     console.log("WhatsApp client is disconnected!");
     io.emit("whatsapp-disconnected","user disconnected!");
   });
-
   return io;
 };
 
