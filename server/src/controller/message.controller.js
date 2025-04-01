@@ -1,10 +1,11 @@
-const { client } = require("../services/whatsappClient");
+const { clients } = require("./user.controller");
 const { DefaultMsg } = require("../models/defaultMsg.model");
 
 const sendMessage = async (req, res) => {
-  const { number, message } = req.body;
 
-  if (!number || !message) {
+  const { number, message, sessionId } = req.body;
+
+  if (!number || !message || !sessionId) {
     return res.status(400).json({ error: "Number and message are required" });
   }
 
@@ -13,12 +14,13 @@ const sendMessage = async (req, res) => {
     : `91${number}@c.us`;
 
   try {
-    await client.sendMessage(formattedNumber, message);
+    await clients[sessionId].sendMessage(formattedNumber, message);
     res
       .status(200)
       .json({ success: true, message: "Message sent successfully" });
   } catch (error) {
     res.status(500).json({ success: false, error: error.message });
+    console.log(error)
   }
 };
 

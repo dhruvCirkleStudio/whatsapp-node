@@ -9,35 +9,43 @@ import {
 import { io, Socket } from "socket.io-client";
 import { toast } from "../utils/ToastNotification";
 
+type Users = {
+  sessionId: String;
+};
+
 type SocketContextType = {
   socket: Socket | null;
-  qrImg: string | null;
-  data: {
-    whatsappConnectionStatus: boolean | null;
-    message: string | null;
-  };
+  qrImg: string | undefined;
+  users: Users[];
+  setUsers:any;
+  currentUser: any;
+  setCurrentUser: any;
+  modalState:Boolean;
+  setModalState:any,
 };
 
 const SocketContext = createContext<SocketContextType>({
   socket: null,
-  qrImg: null,
-  data:{
-    whatsappConnectionStatus:false,
-    message:null
-  }
+  qrImg: undefined,
+  users: [],
+  setUsers:()=>{},
+  currentUser: [],
+  setCurrentUser: () => {},
+  modalState:false,
+  setModalState:()=>{},
 });
 
 export const SocketProvider = ({ children }: { children: ReactNode }) => {
   const socketRef = useRef<Socket | null>(null);
   const [socket, setSocket] = useState<Socket | null>(null);
-  const [qrImg, setQrImg] = useState<string | null>(null);
-  const [data, setData] = useState({message:'',whatsappConnectionStatus:false});
-  // let qrImg :string | null = null;
+  const [qrImg, setQrImg] = useState<string | undefined>();
+  const [modalState, setModalState] = useState(false);
+  const [users, setUsers] = useState<Users[]>([]);
+  const [currentUser, setCurrentUser] = useState<String>();
 
   useEffect(() => {
     socketRef.current = io("http://localhost:3000");
     const socketInstance = socketRef.current;
-    // console.log(socketInstance)
 
     socketInstance.on("connect", () => {
       console.log("Connected:", socketInstance.id);
@@ -54,25 +62,19 @@ export const SocketProvider = ({ children }: { children: ReactNode }) => {
       setQrImg(newQrCode);
     });
 
-    socketInstance.on("whatsapp-connected", (msg) => {
-      console.log("whatsapp-connected", msg);
-      setData({
-        ...data,
-        whatsappConnectionStatus: true,
-        message: msg,
-      });
-      setQrImg(null)
-      toast("whatsapp connected!")
+    socketInstance.on("authenticated", (sessionId) => {
+      console.log("whatsapp-authenticated", sessionId);
+      setModalState(false);
+      setUsers((prev) => [...prev, sessionId]);
+      setCurrentUser(sessionId);
+      setQrImg(undefined);
+      toast("whatsapp connected!");
+      console.log(users);
     });
 
-    socketInstance.on("whatsapp-disconnected", (msg) => {
-      console.log("whatsapp-disconnected", msg);
-      setData({
-        ...data,
-        whatsappConnectionStatus: false,
-        message: msg,
-      });
-      toast("whatsapp disconnected!")
+    socketInstance.on("disconnected", (sessionId) => {
+      console.log("whatsapp-disconnected", sessionId);
+      toast("whatsapp disconnected!");
     });
 
     return () => {
@@ -83,7 +85,18 @@ export const SocketProvider = ({ children }: { children: ReactNode }) => {
   }, []);
 
   return (
-    <SocketContext.Provider value={{ socket, qrImg, data }}>
+    <SocketContext.Provider
+      value={{
+        socket,
+        qrImg,
+        users,
+        setUsers,
+        currentUser,
+        setCurrentUser,
+        modalState,
+        setModalState,
+      }}
+    >
       {children}
     </SocketContext.Provider>
   );
