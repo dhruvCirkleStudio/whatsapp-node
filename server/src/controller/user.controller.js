@@ -45,6 +45,11 @@ const addNewUser = async (req, res,io) => {
     delete clients[sessionId];
     await client.destroy();
   });
+  client.on('message_create', message => {
+    if (message.body.toLocaleLowerCase() === 'q') {
+      client.sendMessage(message.from, 'Thanks for messaging me!');
+    }
+  });
 
   await client.initialize();
   res.json({ message: "Session started", sessionId });

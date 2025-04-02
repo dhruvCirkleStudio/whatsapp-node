@@ -2,8 +2,11 @@ import axios from "axios";
 import { useState } from "react";
 import { toast } from "../utils/ToastNotification";
 import { useSocket } from "../context/SocketContext";
+import { Box, Button, TextField, useTheme } from "@mui/material";
+// import { useTheme, useColorScheme } from "@mui/joy";
 
 export default function MessageHandler() {
+  const theme = useTheme();
   interface msgData {
     number: string;
     message: string;
@@ -40,7 +43,9 @@ export default function MessageHandler() {
     }));
   };
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
     const { name, value } = e.target;
     seMsgtData({
       ...msgData,
@@ -62,12 +67,12 @@ export default function MessageHandler() {
 
   const sendMessage = async () => {
     try {
-        let sessionId = currentUser.sessionId;
-        console.log(sessionId);
-        
+      let sessionId = currentUser.sessionId;
+      console.log(sessionId);
+
       const response = await axios.post("http://localhost:3000/send-message", {
         ...msgData,
-        sessionId
+        sessionId,
       });
       seMsgtData({
         number: "",
@@ -95,63 +100,80 @@ export default function MessageHandler() {
   };
 
   return (
-    <div className="flex justify-center">
-      <div className="">
-        <div className="mt-10 w-[600px]">
-          <form className="p-10 rounded-lg shadow-2xl bg-[#ece5dd]">
-            <input
-              type="text"
-              className="border w-full p-2 rounded"
-              placeholder="Enter phone Number"
-              name="number"
-              value={msgData?.number}
-              onChange={(e) => {
-                handleChange(e);
-              }}
-            />
-            <span className="text-red-500">{errors.number}</span>
-            <input
-              type="text"
-              className="mt-5 border w-full p-2 rounded"
-              placeholder="Enter message"
-              name="message"
-              value={msgData?.message}
-              onChange={(e) => {
-                handleChange(e);
-              }}
-            />
-            <p className="text-red-500">{errors.message}</p>
-            <button
-              type="submit"
-              className="mt-5 text-white font-bold p-2 px-4 me-2 rounded bg-[#128c7e]"
-              onClick={(e) => handleSendMessage(e)}
-            >
-              Send Message
-            </button>
-          </form>
-        </div>
-        <div className="mt-10 w-[600px]">
-          <form className="p-10 rounded-lg shadow-2xl bg-[#ece5dd]">
-            <input
-              type="text"
-              className="border w-full p-2 rounded"
-              placeholder="set default message"
-              name="number"
-              value={defaultMesage}
-              onChange={(e) => {
-                setDefaultMwssage(e.target.value);
-              }}
-            />
-            <button
-              type="submit"
-              className="mt-5 text-white font-bold p-2 px-4 me-2 rounded bg-[#128c7e]"
-              onClick={(e) => updateDefaultMessage(e)}
-            >
-              Submit
-            </button>
-          </form>
-        </div>
-      </div>
-    </div>
+    <Box
+      sx={{ display: "flex", flexDirection: "column", alignItems: "center" }}
+    >
+      <Box
+        className="p-10 mt-10 w-[600px] rounded-lg shadow-2xl "
+        sx={{ bgcolor: theme.palette.secondary.main }}
+      >
+        <TextField
+          type="text"
+          id="outlined-basic"
+          label="Enter phone Number"
+          name="number"
+          value={msgData?.number}
+          onChange={(e) => {
+            handleChange(e);
+          }}
+        />
+        <p className="text-red-500 w-full">{errors.number}</p>
+        <TextField
+          type="text"
+          id="outlined-basic"
+          label="Enter message"
+          name="message"
+          sx={{ marginTop: 2 }}
+          value={msgData?.message}
+          onChange={(e) => {
+            handleChange(e);
+          }}
+        />
+        <p className="text-red-500 w-full">{errors.message}</p>
+        <Button
+          type="submit"
+          sx={{
+            backgroundColor: "#128c7e",
+            color: "white",
+            px: 2,
+            py: 1,
+            marginTop: 2,
+          }}
+          onClick={(e) => handleSendMessage(e)}
+        >
+          Send Message
+        </Button>
+      </Box>
+      <Box
+        className="p-10 mt-10 w-[600px] rounded-lg shadow-2xl"
+        sx={{ bgcolor: theme.palette.secondary.main }}
+      >
+        <TextField
+          type="text"
+          id="outlined-basic"
+          label="set default message"
+          name="number"
+          sx={{}}
+          value={defaultMesage}
+          onChange={(e) => {
+            setDefaultMwssage(e.target.value);
+          }}
+        />
+        <br />
+        <Button
+          type="submit"
+          sx={{
+            backgroundColor: "#128c7e",
+            color: "white",
+            px: 2,
+            py: 1,
+            marginTop: 2,
+          }}
+          onClick={(e) => updateDefaultMessage(e)}
+        >
+          Submit
+        </Button>
+      </Box>
+    </Box>
   );
 }

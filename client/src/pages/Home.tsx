@@ -15,11 +15,20 @@ import {
   Toolbar,
   Typography,
   Divider,
+  useColorScheme,
+  useTheme,
 } from "@mui/material";
 import { Button, Modal, TextField } from "@mui/material";
 import PersonIcon from "@mui/icons-material/Person";
+import DarkModeIcon from "@mui/icons-material/DarkMode";
+import LightModeIcon from "@mui/icons-material/LightMode";
+
+
+
 
 export default function Home() {
+  const { mode, setMode } = useColorScheme();
+   const theme = useTheme();
   const {
     qrImg,
     users,
@@ -35,7 +44,7 @@ export default function Home() {
   const handleClose = () => setModalState(false);
 
   const handleAddUser = async () => {
-    try {
+    try { 
       const response = await axios.post("http://localhost:3000/addNewUser", {
         sessionId: userName,
       });
@@ -46,20 +55,20 @@ export default function Home() {
     }
   };
 
-  const getAllClients = async()=>{
+  const getAllClients = async () => {
     try {
-      const response = await axios.get("http://localhost:3000/getAllClients")
-      console.log(response)
-      const clients = response?.data?.clientsIds
-      setUsers([...clients])
+      const response = await axios.get("http://localhost:3000/getAllClients");
+      console.log(response);
+      const clients = response?.data?.clientsIds;
+      setUsers([...clients]);
     } catch (error) {
-      console.log("getting all clients :",error)
+      console.log("getting all clients :", error);
     }
-  }
+  };
 
-  useEffect(()=>{
+  useEffect(() => {
     getAllClients();
-  },[])
+  }, []);
 
   return (
     <>
@@ -75,6 +84,14 @@ export default function Home() {
             <Typography variant="h6" noWrap component="div">
               {currentUser ? currentUser?.sessionId : "User"}
             </Typography>
+            <Button
+              onClick={() => {
+                mode == "light" ? setMode("dark") : setMode("light");
+              }}
+              sx={{ marginLeft: "auto", backgroundColor: "white" }}
+            >
+              {mode !== "light" ? <DarkModeIcon /> : <LightModeIcon />}
+            </Button>
           </Toolbar>
         </AppBar>
 
@@ -139,12 +156,24 @@ export default function Home() {
         </Box>
       </Box>
       <Modal
-        open={modalState == true ? true : false}
+        open={modalState === true ? true : false}
         onClose={handleClose}
         aria-labelledby="modal-modal-title"
         aria-describedby="modal-modal-description"
       >
-        <Box className="modalStyle">
+        <Box
+          sx={{
+            position: "absolute",
+            width: "450px",
+            top: "50%",
+            left: "50%",
+            transform: "translate(-50%, -50%)",
+            bgcolor: theme.palette.secondary.main,
+            boxShadow: 24,
+            p: "30px",
+            borderRadius: "10px",
+          }}
+        >
           <TextField
             id="outlined-basic"
             label="Enter name"

@@ -21,7 +21,7 @@ type SocketContextType = {
   currentUser: any;
   setCurrentUser: any;
   modalState:Boolean;
-  setModalState:any,
+  setModalState:any;
 };
 
 const SocketContext = createContext<SocketContextType>({
@@ -39,9 +39,9 @@ export const SocketProvider = ({ children }: { children: ReactNode }) => {
   const socketRef = useRef<Socket | null>(null);
   const [socket, setSocket] = useState<Socket | null>(null);
   const [qrImg, setQrImg] = useState<string | undefined>();
-  const [modalState, setModalState] = useState(false);
+  const [modalState, setModalState] = useState<Boolean>(false);
   const [users, setUsers] = useState<Users[]>([]);
-  const [currentUser, setCurrentUser] = useState<String>();
+  const [currentUser, setCurrentUser] = useState<String>()
 
   useEffect(() => {
     socketRef.current = io("http://localhost:3000");
